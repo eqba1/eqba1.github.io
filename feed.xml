@@ -1,28 +1,34 @@
----
-layout: null
----
-
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
-
- <title>{{ site.title }}</title>
- <link href="{{ site.url }}{{ site.baseurl }}/feed.xml" rel="self"/>
- <link href="{{ site.url }}{{ site.baseurl }}/"/>
- <updated>{{ site.time | date_to_xmlschema }}</updated>
- <id>{{ site.url }}/</id>
- <author>
-   <name>{{ site.author.name }}</name>
-   <email>{{ site.author.email }}</email>
- </author>
-
- {% for post in site.posts %}
- <entry>
-   <title>{{ post.title | xml_escape }}</title>
-   <link href="{{ site.url }}{{ site.baseurl }}{{ post.url }}"/>
-   <updated>{{ post.date | date_to_xmlschema }}</updated>
-   <id>{{ site.url }}{{ post.id }}</id>
-   <content type="html">{{ post.content | xml_escape }}</content>
- </entry>
- {% endfor %}
-
-</feed>
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="https://www.w3.org/2005/Atom" xmlns:dc="https://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>eqba1</title>
+    <description></description>
+    <link>https://eqba1.github.com</link>
+    <atom:link href="https://eqba1.github.com/feed.xml" rel="self" type="application/rss+xml" />
+    
+      <item>
+        <title>نظارت بر پورتها و سرویس ها  </title>
+        <description>در این بخش نگاهی خواهیم داشت به چند نکته اساسی و لازم در سرور لینوکسی. نظارت بر سرویس های که در حال اجرا هستن. نحوه حذف سرویسهای غیر ضروری را خواهیم دید. همچنین پورت های که در سیستم باز هستند را بررسی می‌کنیم تا مطمئن شویم که هیچ سرویس و  پورت باز که نیاز نداریم در سیستم وجود ندارد .</description>
+        <pubDate>Fri, 30 Oct 2020 00:00:00 +0000</pubDate>
+        <link>https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux</link>
+        <guid isPermaLink="true">https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux</guid>
+      </item>
+    
+      <item>
+        <title> کوک کردن هسته لینوکس با استفاده از sysctl</title>
+        <description> اگرچه هسته لینوکس به شکلی کاملا ایمن طراحی شده است. اما باز روش هایی برای محکم کاری در آن وجود دارد. انجام این کار در صورتی که بدانیم چه میخواهیم بسیار ساده است. محکم سازی هسته میتواند از برخی حملات مرسوم شبکه و نشت اطلاعات جلوگیری به عمل آورد. البته برای این کار نیازی به کامپایل دوباره هسته یا کرنل نیست. </description>
+        <pubDate>Thu, 15 Oct 2020 00:00:00 +0000</pubDate>
+        <link>https://eqba1.github.com/posts/tuning-linux-kernel-with-sysctl</link>
+        <guid isPermaLink="true">https://eqba1.github.com/posts/tuning-linux-kernel-with-sysctl</guid>
+      </item>
+    
+      <item>
+        <title>اولین پست </title>
+        <description> نخسن پست من در وبلاگ جدید، بیشتر میخوام توضیح بدم که چیکار میخوام بکنم و در این وبلاگ چه چیز هایی رو خواهم نوشت</description>
+        <pubDate>Tue, 13 Oct 2020 00:00:00 +0000</pubDate>
+        <link>https://eqba1.github.com/posts/initial-post</link>
+        <guid isPermaLink="true">https://eqba1.github.com/posts/initial-post</guid>
+      </item>
+    
+  </channel>
+</rss>

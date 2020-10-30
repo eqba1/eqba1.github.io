@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="fa-IR">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>eqba1 | نظارت بر پورتها و سرویس ها  </title>
+  <meta name="description" content="در این بخش نگاهی خواهیم داشت به چند نکته اساسی و لازم در سرور لینوکسی. نظارت بر سرویس های که در حال اجرا هستن. نحوه حذف سرویسهای غیر ضروری را خواهیم دید. همچنین پورت های که در سیستم باز هستند را بررسی می‌کنیم تا مطمئن شویم که هیچ سرویس و  پورت باز که نیاز نداریم در سیستم وجود ندارد .">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="نظارت بر پورتها و سرویس ها  ">
+  <meta property="og:locale" content="fa_IR">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux">
+  <meta property="og:description" content="در این بخش نگاهی خواهیم داشت به چند نکته اساسی و لازم در سرور لینوکسی. نظارت بر سرویس های که در حال اجرا هستن. نحوه حذف سرویسهای غیر ضروری را خواهیم دید. همچنین پورت های که در سیستم باز هستند را بررسی می‌کنیم تا مطمئن شویم که هیچ سرویس و  پورت باز که نیاز نداریم در سیستم وجود ندارد .">
+  <meta property="og:site_name" content="eqba1">
+
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:url" content="https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux">
+  <meta name="twitter:title" content="نظارت بر پورتها و سرویس ها  ">
+  <meta name="twitter:description" content="در این بخش نگاهی خواهیم داشت به چند نکته اساسی و لازم در سرور لینوکسی. نظارت بر سرویس های که در حال اجرا هستن. نحوه حذف سرویسهای غیر ضروری را خواهیم دید. همچنین پورت های که در سیستم باز هستند را بررسی می‌کنیم تا مطمئن شویم که هیچ سرویس و  پورت باز که نیاز نداریم در سیستم وجود ندارد .">
+
+  
+  
+
+  <link href="https://eqba1.github.com/feed.xml" type="application/rss+xml" rel="alternate" title="eqba1 Last 10 blog posts" />
+
+  
+    <link rel="stylesheet" type="text/css" href="/assets/fonts-85dab368d056b5d66418fbfd7e55a89f34f644ee811c8218c81017204426121b.css">
+  
+
+  
+
+    
+      <link rel="icon" type="image/x-icon" href="/assets/favicon-light-22d5f414b6b2b0e2a42052932d4072b318a93ce20817d6d013d84e685fcad8f1.ico">
+      <link rel="apple-touch-icon" href="/assets/apple-touch-icon-light-9711c1d41ea4a8ffba275758ecd2d83d95acc8365492a9512be21617a8c49fd1.png">
+      <link rel="stylesheet" type="text/css" title="light" id="light" href="/assets/light-2f2b42b207b89420eab7874550c9835cd6bb72d97df89f972ee9e0f66364b9b5.css">
+      <link rel="stylesheet" type="text/css" title="dark" id="dark" href="/assets/dark-7b4a340492b76144450a56aea5681218d9df0a8e0437f31fca997b5ac1470256.css" disabled="true">
+    
+
+  
+
+</head>
+
+<body>
+  <main>
+    <div class="grid grid-centered">
+      <div class="grid-cell">
+        <nav class="header-nav scrollappear">
+  <a href="/" class="header-logo" title="eqba1">eqba1</a>
+  <ul class="header-links">
+    
+      <li>
+        <a href="/about" title="About me">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-about">
+  <use href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about" xlink:href="/assets/about-ecf154b571ab8034ae00aeed91a3b7ad68db80b46d958753ad6216c919486e88.svg#icon-about"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a href="https://twitter.com/_eqba1" rel="noreferrer noopener" target="_blank" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-twitter">
+  <use href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter" xlink:href="/assets/twitter-8842c33965263ad1b03a978406826677a668f94125d5837e70ab83f24b3213a7.svg#icon-twitter"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+      <li>
+        <a href="https://github.com/eqba1" rel="noreferrer noopener" target="_blank" title="GitHub">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-github">
+  <use href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github" xlink:href="/assets/github-094f81040819f34343ee6ffff0980f17e2807b08b595eaaf66ae3554934fd78d.svg#icon-github"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="https://instagram.com/_eqba1" rel="noreferrer noopener" target="_blank" title="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-instagram">
+  <use href="/assets/instagram-37f85bc75b43ecc4c114d9a46f846327fe13c5893787c6afbcfef9d30d58bd9e.svg#icon-instagram" xlink:href="/assets/instagram-37f85bc75b43ecc4c114d9a46f846327fe13c5893787c6afbcfef9d30d58bd9e.svg#icon-instagram"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      <li>
+        <a href="/feed.xml" rel="noreferrer noopener" target="_blank" title="RSS">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-rss">
+  <use href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss" xlink:href="/assets/rss-541ec5cea9cefd10d2fcfec01888f3f231a8829940249835fa7b7b3a12ae0d0d.svg#icon-rss"></use>
+</svg>
+
+        </a>
+      </li>
+    
+    
+      <li>
+        <a onclick="toggle()" title="Toggle Theme">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon-theme">
+  <use href="/assets/theme-66869e0bf8dab34bae1c86bda400327b772e0be69e8dc28d3ede896e771320ed.svg#icon-theme" xlink:href="/assets/theme-66869e0bf8dab34bae1c86bda400327b772e0be69e8dc28d3ede896e771320ed.svg#icon-theme"></use>
+</svg>
+
+        </a>
+      </li>
+    
+  </ul>
+</nav>
+
+
+
+        <div id="align-right">
+          <article class="article scrollappear">
+            <header class="article-header ">
+              <h1>نظارت بر پورتها و سرویس ها  </h1>
+              <p>در این بخش نگاهی خواهیم داشت به چند نکته اساسی و لازم در سرور لینوکسی. نظارت بر سرویس های که در حال اجرا هستن. نحوه حذف سرویسهای غیر ضروری را خواهیم دید. همچنین پورت های که در سیستم باز هستند را بررسی می‌کنیم تا مطمئن شویم که هیچ سرویس و  پورت باز که نیاز نداریم در سیستم وجود ندارد .</p>
+              <div class="article-list-footer">
+  <span class="article-list-date">
+    October 30, 2020
+  </span>
+  <span class="article-list-divider">-</span>
+  <span class="article-list-minutes">
+    
+    
+      7 minute read
+    
+  </span>
+  <span class="article-list-divider">-</span>
+  <div class="article-list-tags">
+    
+      
+      <a href="/tag/linux" title="See all posts with tag 'Linux'">Linux</a>
+    
+      
+      <a href="/tag/operating-system" title="See all posts with tag 'Operating System'">Operating System</a>
+    
+      
+      <a href="/tag/security" title="See all posts with tag 'Security'">Security</a>
+    
+  </div>
+</div>
+            </header>
+
+            <div class="article-content ">
+              <p><a href="/assets/documentation/MONITORING@2x-bb323546742f3ad71c21f2d83b1599f92781e847caeabc441042eba38cee878a.jpg">
+  <img src="/assets/documentation/MONITORING-416af206c9ac3f23de7d2254d6e3b28bfd2a85d694dc6c5e3a7ccc2ab31f6b57.jpg" alt="madule 1" class="zooming" data-rjs="/assets/documentation/MONITORING@2x-bb323546742f3ad71c21f2d83b1599f92781e847caeabc441042eba38cee878a.jpg" data-zooming-width="1220" data-zooming-height="686" />
+</a></p>
+
+<h2 id="بررسی-سرویس-ها-با-systemctl">بررسی سرویس ها با systemctl</h2>
+
+<p>بعد از نصب هر سیستم لینوکسی یک سری سرویس مورد نیازمان خواهد شد. محبوب ترین سرویس شاید سرویس ssh باشد که بتوانیم از طریق یک پروتکل رمزنگاری شده به سرور لینوکسی خود وصل شویم. اما آیا همه سرویس های که بر روی سیستم در حال اجرا هستند مورد نیازمان است؟ واقعیت این است که ما به همه سرویس های که در سیستم وجود دارد تا زمانی نیاز داریم که بدانیم دقیقا هر کدام چه کاری را انجام می‌دهند و برای چه چیزی در حال اجرا هستند. در غیر این صورت سرویس ها ناشناس می‌توانند درگاه ورود غیرمجاز به سیستم ما را در اختیار هکران قرار دهند. به همین منظور نظارت همیشگی بر روی این پورت ها و سرویس ها یکی از نکات بسیار حائز اهمیت می باشد.</p>
+
+<p>در سیستم ubuntu server 20.04 و در اکثر سیستم های لینوکسی مدرن برای دیدن لیست تمام واحدهای موجود از دستور زیر استفاده میکنیم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ <span class="nb">sudo </span>systemctl list-units </code></pre></figure>
+
+<p>حال ما لیست تمامی واحد های که در حال حاظر در حافظه است را لیست کردیم. اما اگر بخواهیم  سرویس های موجود را از این لیست جدا کنیم چه ؟ در حالت کلی ما از طرف سرویس های تهدید خواهیم شد که در حافظه وجود دارند و همچنین وضعیت آنها فعال است. پس از این لیست موجود نیز با استفاده از دستور زیر سرویس های فعال را جدا میکنیم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ <span class="nb">sudo </span>systemctl list-units <span class="nt">--type</span> services <span class="nt">--state</span> active </code></pre></figure>
+
+<p>یک اصل اساسی در مدیریت سرور(صرف نظر سیستم عامل) این است که هرگز چیزی را که کاملا نیازی به آن نداریم روی سرور نصب نکنیم. به خصوص اگر سرویس با شبکه در ارتباط باشد. تا به اینجا ما سرویس های فعال بر روی سیستم لینوکسی را یافتیم حال باید اطمینان یابیم که از لیست موجود تنها سرویسهای که نیاز داریم و یا اگر شخص دیگری نیز مدیریت سرور را دارد سرویس های که او نیاز دارد نیز وجود داشته باشد و سایر سرویس ها غیر فعال یا حذف شوند.</p>
+
+<p>برای اینکه یک سرویس را حذف یا غیر فعال سازیم کافی است نام سرویس را که به عنوان مثال در اینجا atd است به دستور زیر بدهیم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ <span class="nb">sudo </span>systemctl disable atd –now </code></pre></figure>
+
+<p>گفته شد که سرویس های که در سیستم نیاز نداریم را می‌توانیم حذف یا غیر فعال کنیم اما سوال مهمی که در اینجا وجود دارد این است که; آیا ما می‌توانیم هر سرویسی که نیاز نداریم را به صورت کامل حذف کنیم؟ شاید سوال عجیبی باشد. اما در لینوکس همان طور که می دانیم ابزارها و واحدها می توانند به یکدیگر وابستگی داشته باشند. پس امکان دارد با حذف یک واحد قسمت های مهم دیگر از سیستم نیز پاک شود که اصلا خوشایند نیست. برای مثال ما بعد از غیر فعال سازی دستور atd قصد داریم که آن را حذف کنیم. پس دستور زیر را وارد میکنیم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ which atd
+/usr/sbin/atd
+➜ dpkg <span class="nt">-S</span> <span class="si">$(</span>which atd<span class="si">)</span>
+at: /usr/sbin/atd
+➜ <span class="nb">sudo </span>apt purge at
+Reading package lists... Done
+Building dependency tree       
+Reading state information... Done
+The following package was automatically installed and is no longer required:
+  libfl2
+Use <span class="s1">'sudo apt autoremove'</span> to remove it.
+The following packages will be REMOVED:
+  at<span class="k">*</span> ubuntu-server<span class="k">*</span>
+0 upgraded, 0 newly installed, 2 to remove and 10 not upgraded.
+After this operation, 215 kB disk space will be freed.
+Do you want to <span class="k">continue</span>? <span class="o">[</span>Y/n] </code></pre></figure>
+
+<p>نکته بسیار مهم در خروجی دستور بالا توجه به وابستگی های نرم افزار ‍<code class="highlighter-rouge">at</code> می باشد. این ابزار همراه خود یک  نرم افزار دیگر را به اسم <code class="highlighter-rouge">ubuntu-server*</code> را حذف میکند. در حالی که ما هیچ اطلاعی از این نرم فزار نداریم و در صورتی که ندانسته این ابزار را حذف کنیم منجر به مشکلات جبران ناپذیری در سیستم خواهد شد.حال که نمی توانیم سرویس را حذف کنیم، پس باید وابستگی های at را نیز بررسی کنیم به این منظور خواهیم داشت :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ <span class="nb">sudo </span>apt show ubuntu-server 
+Package: ubuntu-server
+Version: 1.450.2
+Priority: optional
+Section: metapackages
+Source: ubuntu-meta
+Origin: Ubuntu
+Maintainer: Ubuntu Developers &lt;ubuntu-devel-discuss@lists.ubuntu.com&gt;
+Bugs: https://bugs.launchpad.net/ubuntu/+filebug
+Installed-Size: 52.2 kB
+Depends: apport, at, bcache-tools, btrfs-progs, byobu, cloud-guest-utils, cloud-initramfs-copymods, cloud-initramfs-dyn-netconf, curl, dirmngr, ethtool, fonts-ubuntu-console, git, gnupg, htop, lvm2, mdadm, multipath-tools, overlayroot, patch, pollinate, screen, software-properties-common, sosreport, tmux, update-notifier-common, vim, xfsprogs, motd-news-config
+Recommends: fwupd, landscape-common, lxd-agent-loader, open-iscsi, open-vm-tools, snapd
+Task: server, cloud-image
+Download-Size: 2680 B
+APT-Manual-Installed: <span class="nb">yes
+</span>APT-Sources: http://ir.archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages
+Description: The Ubuntu Server system
+ This package depends on all of the packages <span class="k">in </span>the Ubuntu Server system
+ <span class="nb">.</span>
+ It is also used to <span class="nb">help </span>ensure proper upgrades, so it is recommended that
+ it not be removed.</code></pre></figure>
+
+<p>در خروجی دستور مشاهده می‌کنیم که حذف کردن این ابزار به هیچ وجه پیشنهاد نمی‌شود. پس قبل از تصمیم برای حذف کردن یک سرویس که نیاز آن در سرور وجود ندارد از بررسی آن با استفاده از دستور بالا اطمینان یافته و بعد تصمیم خود را نهایی کنید.سوالی که شاید پیش بیاید این است که حال که نمیتوانیم سرویس را حذف کنیم چطور مطمئن شویم که دیگر این سرویس در هیچ موقعیتی دوباره راه اندازی نمی شود؟</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ <span class="nb">sudo </span>systemctl mask atd</code></pre></figure>
+
+<p>همانطور که از نام دستور مشخص است به واحدها سیستم با استفاده از پیوند دادن
+فایل های آن به واحد /dev/null مطمن میشود که صرفا نقابی از سرویس وجود دارد
+و شروع مجدد سرویس را غیرممکن میکند. در صورتی که بخواهید به صورت موقتی این 
+عمل انجام شود میتواند از سوئیچ –runtime استفاده کنید. همچنین برای ماسک زدن و 
+توقف همزمان واحد یا واحدهای مورد نظر سوئیچ –now در این دستور هم وجود دارد.
+این بود تمام انچه که نیاز بود برای بررسی سرویس های روی سیستم لینوکسی باید انجام دهید</p>
+
+<h1 id="پیاده-سازی-سرویس-ntp">پیاده سازی سرویس NTP</h1>
+
+<p>از NTP برای هماهنگی ساعت دستگاه های شبکه استفاده می شود تا سرویسهایی که با زمان در ارتباط هستند به درستی کار کنند. برای نمونه یکی از این سرویس ها مربوط به log می باشد. هر log ی که تولید می‌شود دارای زمان می باشد و برای نظارت راحتر باید زمان سرور دقیق باشد. ترجیحا از ورژن های آبدیت NTP استفاده کنید. زیرا این سرویس نیز دارای باگ های بحرانی می باشد و در صورت تنظیم نکردن دقیق و ابدیت نبودن خود میتواند باعث ایجاد دسترسی به سرور شود. در این قسمت به پیاده سازی این سرویس میپردازیم. 
+در اکثر توزیع های مخصوص سرور از جمله Ubuntu 20.04 این سرویس به صورت پیش فرض وجود دارد. برای اطلاع از وضعیت ساعت سیستم. دستور <code class="highlighter-rouge">timedatectl</code> را در ترمینال اجرا میکنیم:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜ timedatectl
+➜ timedatectl status</code></pre></figure>
+
+<p>خروجی هر دو دستور یکسان است. برای اینکه بتوانیم سرویس NTP را کنترل کنیم بهتر است از systemctl استفاده کنیم. برای دیدن وضعیت زمان</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">  ➜  systemctl status systemd-timesyncd.service</code></pre></figure>
+
+<p>در خروجی این دستور میتوانیم وضعیت سرویس را مشاهده کنیم.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜  <span class="nb">cat</span> /etc/systemd/timesyncd.conf</code></pre></figure>
+
+<p>طبق فلسفه لینوکس نیز برای تنظیم کردن هر کدام از سرویس ها یک فایل پیکربندی در مسیر ‘/etc/’ برای شخصی سازی و کنترل بیشتر وجود دارد. با استفاده از این سرویس شما حتی اگر در سیاره دیگری در کهکشان باشید ساعتتان با ساعت جهانی بر روی زمین به شکل دقیقی تنظیم می شود.</p>
+
+<h2 id="لیست-پورت-ها">لیست پورت ها</h2>
+<p>نظارت بر پورت ها نیز یکی از مسائل بسیار مهم در امنیت هر دستگاهی به شمار می‌رود. در سیستم عامل لینوکس برای دیدن لیست پورتهای باز معمولا دستور netstat را می شناسیم. اما در این دوره به علت اینکه دستور ss بسیار پرکاربردتر است از دستور ss استفاده می‌کنیم. 
+جهت مشاهده لیست تمام پورتهای باز بر روی سیستم که در حالت LISTEN هستند. کافی است دستور را با آپشن های زیر به کار ببریم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ➜  ss <span class="nt">-ntl</span></code></pre></figure>
+
+<p>این کار چندان سختی نیست و میتوان با یک جستجوی ساده نیز این دستور را یافت اما در اینجا به عنوان نمونه ما میخواهیم با استفاده از دستور ss سرویس ssh را که بر روی همه interface های ipv6 و ipv4 در حال LISTEN است محدود کنیم به فقط استفاده از ipv4 زیرا به ندرت اتفاق خواهد افتاد که از طریق ipv6 به سرور متصل شد و هرچه ما کنترل بیشتری بر روی سیستم داشته باشیم امنیت سیستم نیز بالاتر خواهد رفت. برای مشاهده اینکه در سیستم شما این سرویس بر روی چه رابطهای در حال LISTEN است کافی است از دستور زیر استفاده کنیم :</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  ss <span class="nt">-l</span> ‘<span class="o">(</span> sport <span class="o">=</span>: ssh <span class="o">)</span>’
+Netid  State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port Process  
+tcp    LISTEN  0       128            0.0.0.0:ssh         0.0.0.0:<span class="k">*</span>             
+tcp    LISTEN  0       128               <span class="o">[</span>::]:ssh            <span class="o">[</span>::]:<span class="k">*</span>    </code></pre></figure>
+
+<ul>
+  <li>به فاصله های بین هر کارکتر به خوبی دقت کنید.</li>
+</ul>
+
+<p>برای محدود کردن این سرویس لازم است با استفاده از فایل کانفیگ را در مسیر 
+‘etc/ssh/sshd_config’  با استفاده از یک ویرایشگر دلخواه، فایل را  باز کرده و علامت هشتگ یا ( # ) را از عبارت زیر حذف کنید نتیجه به صورت زیر خواهد بود:</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash"> ListenAddress 0.0.0.0</code></pre></figure>
+
+<p>بعد از آن سیستم ssh را راه اندازی مجدد کرده و مشاهده میکنیم که تنظیمات به خوبی اعمال شده است.</p>
+
+<figure class="highlight"><pre><code class="language-bash" data-lang="bash">➜  <span class="nb">sudo </span>systemctl restart sshd
+➜  ss <span class="nt">-l</span> <span class="s1">'( sport = :ssh )'</span>     
+Netid  State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port Process  
+tcp    LISTEN  0       128            0.0.0.0:ssh         0.0.0.0:<span class="k">*</span>             </code></pre></figure>
+
+<p>در این ماژول دیدیم که به سادگی و داشتن چند دستور ساده میتوان کنترل و نظارت بسیار دقیقی بر روی سیستم انجام داد. همه موارد گفته شده را میتوان برای سایر سرویس ها و پورتهای دیگر که در سرور حیاتی هستند تعمیم داد. همچنین در پایان برای تمرین بیشتر پیشنهاد میکنم روش پیدا کردن پورت ها باز و اطلاعات مربوط به آنها را از خارج از شبکه پیدا کنید. با استفاده از یک ماشین مجازی یا یک سرور کوچک میتوانید این تمرین را برای مهارت بیشتر انجام دهید. راهای ایمن سازییشان را نیز میتوانید در این ماژول مشاهده و تمرین کنید :)‌ خسته نباشید.</p>
+
+            </div>
+        </div>
+          <div class="article-share">
+            
+            
+            <a href="https://twitter.com/home?status=%D9%86%D8%B8%D8%A7%D8%B1%D8%AA+%D8%A8%D8%B1+%D9%BE%D9%88%D8%B1%D8%AA%D9%87%D8%A7+%D9%88+%D8%B3%D8%B1%D9%88%25...%20-%20https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux%20by%20@_eqba1" title="Share on Twitter" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M492 109.5c-17.4 7.7-36 12.9-55.6 15.3 20-12 35.4-31 42.6-53.6 -18.7 11.1-39.4 19.2-61.5 23.5C399.8 75.8 374.6 64 346.8 64c-53.5 0-96.8 43.4-96.8 96.9 0 7.6 0.8 15 2.5 22.1 -80.5-4-151.9-42.6-199.6-101.3 -8.3 14.3-13.1 31-13.1 48.7 0 33.6 17.2 63.3 43.2 80.7C67 210.7 52 206.3 39 199c0 0.4 0 0.8 0 1.2 0 47 33.4 86.1 77.7 95 -8.1 2.2-16.7 3.4-25.5 3.4 -6.2 0-12.3-0.6-18.2-1.8 12.3 38.5 48.1 66.5 90.5 67.3 -33.1 26-74.9 41.5-120.3 41.5 -7.8 0-15.5-0.5-23.1-1.4C62.8 432 113.7 448 168.3 448 346.6 448 444 300.3 444 172.2c0-4.2-0.1-8.4-0.3-12.5C462.6 146 479 129 492 109.5z"/></svg>
+            </a>
+            <a href="https://www.facebook.com/sharer/sharer.php?u=https://eqba1.github.com/posts/monitoring-ports-and-services-in-linux" title="Share on Facebook" rel="noreferrer noopener" target="_blank">
+              <svg viewBox="0 0 512 512"><path d="M288 192v-38.1c0-17.2 3.8-25.9 30.5-25.9H352V64h-55.9c-68.5 0-91.1 31.4-91.1 85.3V192h-45v64h45v192h83V256h56.4l7.6-64H288z"/></svg>
+            </a>
+          </div>
+
+          
+            <div id="disqus_thread" class="article-comments"></div>
+            <script src="https://eqba1-github-com.disqus.com/embed.js" async defer></script>
+            <noscript>Please enable JavaScript to view the comments.</noscript>
+          
+        </article>
+        <footer class="footer scrollappear">
+  <p>
+      powerd by <a href="https://github.com/eqba1">github</a>
+  </p>
+</footer>
+
+      </div>
+    </div>
+  </main>
+  
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-180543596-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'UA-180543596-1');
+  </script>
+
+
+<script src="/assets/vendor-130c9c254effc51f3283620bc635851da7b99c20901216948f11ba72ee13317f.js" type="text/javascript"></script>
+
+
+
+
+  <script src="/assets/scrollappear-e2da8ea567e418637e31266cc5302126eaa79f62a2273739086358b589a89ee6.js" type="text/javascript"></script>
+
+
+<script src="/assets/application-cfde13ac81ddaf4351b2e739603e2baf688d0fcc9aba613fe62bbb1c7b037fb9.js" type="text/javascript"></script>
+
+
+  <script src="/assets/themetoggle-df0d3d73164dc26dffbd630182ae4d0dfa7bee6b694a2b5d565d73595b582bbf.js" type="text/javascript"></script>
+
+</body>
+</html>
